@@ -7,7 +7,6 @@
 #include <cstdio>
 #include <ctime>
 #include <vector>
-#include <cstddef>
 #include <enemy.hpp>
 #include <menus.hpp>
 #include <blood.hpp>
