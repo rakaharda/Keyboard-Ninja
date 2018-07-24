@@ -7,14 +7,14 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/sfmltest" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/keyboardninja" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-std=c++0x" />
 					<Add option="-g" />
-					<Add directory="../sfmltest" />
+					<Add directory="../Keyboard-Ninja" />
 					<Add directory="sfml/include" />
 				</Compiler>
 				<Linker>
@@ -44,7 +44,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="../sfmltest" />
+			<Add directory="../Keyboard-Ninja" />
 			<Add directory="sfml" />
 		</Compiler>
 		<Linker>
