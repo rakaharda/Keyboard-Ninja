@@ -10,6 +10,7 @@
 #include <enemy.hpp>
 #include <menus.hpp>
 #include <blood.hpp>
+#include <button.hpp>
 #define NOE 100
 sf::Vector2f genRandomCoords ();
 int main ()
@@ -107,6 +108,9 @@ int main ()
         std::vector<Enemy> shuriken;
         std::vector<Enemy> powerup;
         std::vector<float> powerupLifetime;
+        std::vector<Button> button;
+        button.push_back(Button(0, "Mute", font, heart_texture));
+        button[0].setPosition (10.f,50.f);
         ingameMusic.play();
         clock.restart();
 
@@ -152,6 +156,13 @@ int main ()
                         clock.restart();
                         break;
                 //Ввод текста
+                case sf::Event::MouseButtonPressed:
+                    if (event.mouseButton.button==sf::Mouse::Left)
+                        if(button[0].isClicked(sf::Mouse::getPosition(window))==0)
+                        {
+                        if (ingameMusic.getVolume()>0) ingameMusic.setVolume(0); else
+                            ingameMusic.setVolume(50);
+                        }
                 case sf::Event::TextEntered:
                     if (event.text.unicode>96&&event.text.unicode<123&&input->length()<33)
                     {
@@ -312,6 +323,7 @@ int main ()
                 else
                     shuriken[i].update(deltaTime);
             }
+            //Начало отрисовки
             window.clear();
             //layer1
             window.draw(background);
@@ -352,6 +364,10 @@ int main ()
             }
             //layer3
             window.draw(textbox_bg);
+            for (unsigned short i=0; i<button.size(); i++)
+            {
+                window.draw(button[i]);
+            }
             //layer4
             window.draw(textbox);
             window.draw(fpsCounter);
