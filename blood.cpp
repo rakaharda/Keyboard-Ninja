@@ -6,8 +6,10 @@ Blood::Blood(sf::Vector2f sP, float a)
     srand(time(NULL));
     count=150;
     speed=600.f;
-    angle.reserve(count);
-    distance.reserve(count);
+    angle.clear();
+    angle.resize(count);
+    distance.clear();
+    distance.resize(count);
     startPos=sP;
     vertices=sf::VertexArray(sf::Points, count);
     for (short i=0; i<count-20; i++)
@@ -50,7 +52,6 @@ void Blood::update(float elapsed)
             vertices[i].position+=sf::Vector2f(std::cos(angle[i])*elapsed*speed, std::sin(angle[i])*elapsed*speed*(-1));
         if (clock.getElapsedTime().asSeconds()>2.f)
         vertices[i].color.a=255-(clock.getElapsedTime().asSeconds()-2.f)*255/5;
-
     }
 }
 sf::VertexArray Blood::getArray()
@@ -61,4 +62,9 @@ sf::VertexArray Blood::getArray()
 float Blood::getTime()
 {
     return clock.getElapsedTime().asSeconds();
+}
+
+void Blood::draw (sf::RenderTarget& target, sf::RenderStates states) const
+{
+    target.draw (vertices);
 }

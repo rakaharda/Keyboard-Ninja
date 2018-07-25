@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iostream>
 
-class Enemy
+class Enemy : public sf::Drawable
 {
 private:
     sf::Vector2f startPos;
@@ -17,6 +17,7 @@ private:
     sf::Text text;
     float speed;
     float rotationAngle;
+    virtual void draw (sf::RenderTarget& target, sf::RenderStates states) const;
 public:
     Enemy();
     Enemy(sf::Vector2f sP, sf::Texture &texture, sf::Font &font, sf::Vector2f tP, float s=50.f, std::string n=" ");
@@ -36,6 +37,5 @@ public:
     void setRotation(float a);
     bool checkCollision(sf::Sprite *t);
     bool checkString(std::string s);
-
 };
 #endif // ENEMYHPP

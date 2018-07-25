@@ -89,3 +89,9 @@ bool Enemy::checkString(std::string s)
 sf::Vector2f Enemy::getPos(){
     return sprite.getPosition();
 }
+
+void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    target.draw (sprite, states);
+    target.draw(text, states);
+}

@@ -102,10 +102,10 @@ int main ()
         delete(input);
         input=new std::string;
         //Выделяем память для объектов
-        std::vector<Enemy*> enemy;
-        std::vector<Blood*> blood;
-        std::vector<Enemy*> shuriken;
-        std::vector<Enemy*> powerup;
+        std::vector<Enemy> enemy;
+        std::vector<Blood> blood;
+        std::vector<Enemy> shuriken;
+        std::vector<Enemy> powerup;
         std::vector<float> powerupLifetime;
         ingameMusic.play();
         clock.restart();
@@ -132,7 +132,7 @@ int main ()
                 ss.clear();
             }
             if (doubleDamage>0.f) doubleDamage-=deltaTime;
-            std::cout<<"Delta time: "<<deltaTime<<" Spawn time: "<<powerupTime<<" Spawn rate: "<<spawnRate<<std::endl;
+            //std::cout<<"Delta time: "<<deltaTime<<" Spawn time: "<<powerupTime<<" Spawn rate: "<<spawnRate<<std::endl;
             while (window.pollEvent(event))
             {
                 switch (event.type)
@@ -170,13 +170,13 @@ int main ()
                             throwSound.play();
                             for (unsigned short i=0; i<enemy.size(); i++)
                             {
-                                if(enemy[i]->checkString(*input))
+                                if(enemy[i].checkString(*input))
                                 {
                                     std::string s=" ";
-                                    shuriken.push_back(new Enemy(player.getPosition(), shuriken_texture, font, enemy[i]->getPos(), 600.f));
+                                    shuriken.push_back(Enemy(player.getPosition(), shuriken_texture, font, enemy[i].getPos(), 600.f));
                                     if (doubleDamage>0.f&&enemy.size()!=1) {
-                                        if (i!=0) shuriken.push_back(new Enemy(player.getPosition(), shuriken_texture, font, enemy[0]->getPos(), 600.f));
-                                        else shuriken.push_back(new Enemy(player.getPosition(), shuriken_texture, font, enemy[1]->getPos(), 600.f));
+                                        if (i!=0) shuriken.push_back(Enemy(player.getPosition(), shuriken_texture, font, enemy[0].getPos(), 600.f));
+                                        else shuriken.push_back(Enemy(player.getPosition(), shuriken_texture, font, enemy[1].getPos(), 600.f));
                                     }
 
                                     i=enemy.size();
@@ -184,10 +184,10 @@ int main ()
                             }
                             for (unsigned short i=0; i<powerup.size(); i++)
                             {
-                                if(powerup[i]->checkString(*input))
+                                if(powerup[i].checkString(*input))
                                 {
                                     std::string s=" ";
-                                    shuriken.push_back(new Enemy(player.getPosition(), shuriken_texture, font, powerup[i]->getPos(), 600.f));
+                                    shuriken.push_back(Enemy(player.getPosition(), shuriken_texture, font, powerup[i].getPos(), 600.f));
                                     i=powerup.size();
                                 }
                             }
@@ -234,12 +234,12 @@ int main ()
                         r=rand()%22;
                         for (unsigned short i=0; i<enemy.size(); i++)
                         {
-                            if (enemy[i]->checkString(words3[r]))
+                            if (enemy[i].checkString(words3[r]))
                                 f=true;
                         }
                     }
                     while (f);
-                    enemy.push_back(new Enemy(genRandomCoords(), kasa_texture, font, player.getPosition(), enemySpeed, words3[r]));
+                    enemy.push_back(Enemy(genRandomCoords(), kasa_texture, font, player.getPosition(), enemySpeed, words3[r]));
                     enemysSpawned++;
                 }
             }
@@ -247,12 +247,12 @@ int main ()
             if (powerupTime>=10.f)
             {
                 powerupTime=0.f;
-                powerup.push_back(new Enemy(sf::Vector2f(300, 100), kasa_texture, font, sf::Vector2f(300, 200), 0.f, powerups[0]));
+                powerup.push_back(Enemy(sf::Vector2f(300, 100), kasa_texture, font, sf::Vector2f(300, 200), 0.f, powerups[0]));
             }
             //Проверка столкновения с игроком каждого врага
             for (unsigned short i=0; i<enemy.size(); i++)
             {
-                if (enemy[i]->checkCollision(&player))
+                if (enemy[i].checkCollision(&player))
                 {
                     health--;
                     if  (health==0)
@@ -273,16 +273,16 @@ int main ()
             for (unsigned short i=0; i<shuriken.size(); i++)
             {
                 for (unsigned short j=0; j<enemy.size(); j++)
-                    if (shuriken[i]->checkCollision(enemy[j]->getSpritePointer()))
+                    if (shuriken[i].checkCollision(enemy[j].getSpritePointer()))
                     {
-                        blood.push_back(new Blood(enemy[j]->getPos(), enemy[j]->getAngle()));
+                        blood.push_back(Blood(enemy[j].getPos(), enemy[j].getAngle()));
                         bloodSound.play();
                         enemy.erase(enemy.begin()+j);
                         enemysSpawned--;
                         score++;
                     }
                 for (unsigned short j=0; j<powerup.size();j++){
-                    if (shuriken[i]->checkCollision(powerup[j]->getSpritePointer()))
+                    if (shuriken[i].checkCollision(powerup[j].getSpritePointer()))
                     {
                         powerup.erase(powerup.begin()+j);
                         doubleDamage=10.0f;
@@ -293,25 +293,24 @@ int main ()
             //Движение врагов
             for (unsigned short i=0; i<enemy.size(); i++)
             {
-                enemy[i]->update(deltaTime);
+                enemy[i].update(deltaTime);
             }
 
             //Движение крови
             for (unsigned short i=0; i<blood.size(); i++)
             {
-                //if (blood[i]!=nullptr)
-                blood[i]->update(deltaTime);
+                blood[i].update(deltaTime);
             }
 
             //Движение сюрикенов
             for (unsigned short i=0; i<shuriken.size(); i++)
             {
-                if (shuriken[i]->getPos().x>810||shuriken[i]->getPos().x<-10)
+                if (shuriken[i].getPos().x>810||shuriken[i].getPos().x<-10)
                 {
                     shuriken.erase(shuriken.begin()+i);
                 }
                 else
-                    shuriken[i]->update(deltaTime);
+                    shuriken[i].update(deltaTime);
             }
             window.clear();
             //layer1
@@ -319,8 +318,10 @@ int main ()
             //Рисование и удаление крови
             for (unsigned short i=0; i<blood.size(); i++)
             {
-                if (blood[i]->getTime()<7.f)
-                    window.draw(blood[i]->getArray());
+                if (blood[i].getTime()<7.f)
+                    {
+                        window.draw(blood[i]);
+                    }
                 else
                 {
                     blood.erase(blood.begin()+i);
@@ -329,20 +330,18 @@ int main ()
             //Рисование сюрикенов
             for (unsigned short i=0; i<shuriken.size(); i++)
             {
-                window.draw(shuriken[i]->getSprite());
+                window.draw(shuriken[i]);
             }
             //layer2
             //Рисование врагов и текста к ним
             for (unsigned short i=0; i<enemy.size(); i++)
             {
-                window.draw(enemy[i]->getSprite());
-                window.draw(enemy[i]->getTextbox());
+               window.draw (enemy[i]);
             }
             //Рисование бонусов
             for (unsigned short i=0; i<powerup.size(); i++)
             {
-                window.draw(powerup[i]->getSprite());
-                window.draw(powerup[i]->getTextbox());
+                window.draw(powerup[i]);
             }
             window.draw (player);
             //Рисование здоровья
